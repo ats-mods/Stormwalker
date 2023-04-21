@@ -9,6 +9,7 @@ using Eremite.Buildings.UI;
 using Eremite.View.HUD;
 using TMPro;
 using System.Linq;
+using Eremite.View.HUD.Construction;
 
 namespace Stormwalker
 {
@@ -116,6 +117,12 @@ namespace Stormwalker
                 return false;
             }
             return true;
+        }
+
+        [HarmonyPatch(typeof(BuildingsPanel), nameof(BuildingsPanel.SetUp))]
+        [HarmonyPostfix]
+        private static void BuildingPanel__SetUp(BuildingsPanel __instance){
+            Plugin.buildingPanel = __instance;
         }
     }
 }

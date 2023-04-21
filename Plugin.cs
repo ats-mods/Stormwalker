@@ -1,11 +1,15 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using Eremite;
+using Eremite.Buildings.UI;
 using Eremite.Controller;
 using Eremite.MapObjects;
+using Eremite.Services;
 using Eremite.View.Cameras;
+using Eremite.View.HUD.Construction;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Stormwalker
 {
@@ -18,10 +22,12 @@ namespace Stormwalker
         public static void Log(object obj) => Instance.Logger.LogInfo(obj);
         public static void Error(object obj) => Instance.Logger.LogError(obj);
 
+        public static BuildingsPanel buildingPanel = null;
 
         KeyboardShortcut zoomOverviewKey;
         KeyboardShortcut placeGathererHut;
         KeyboardShortcut superSpeed;
+        KeyboardShortcut placePath;
 
         private void Awake()
         {
@@ -32,12 +38,14 @@ namespace Stormwalker
             zoomOverviewKey = new(UnityEngine.KeyCode.Backspace);
             placeGathererHut = new(UnityEngine.KeyCode.LeftShift);
             superSpeed = new(UnityEngine.KeyCode.Alpha5);
+            placePath = new(UnityEngine.KeyCode.P);
         }
 
         Vector2 zoomLimit = new Vector2(-20f, -8f);
 
         private void Update(){
-            if(!GameController.IsGameActive) return;
+            if(!GameController.IsGameActive || MB.InputService.IsLocked()) 
+                return;
 
             if(zoomOverviewKey.IsDown()){
                 var zoom = -60f;
@@ -64,6 +72,10 @@ namespace Stormwalker
                 }
             } else if(superSpeed.IsDown()){
                 GameMB.TimeScaleService.Change(SUPER_SPEED_SCALE, true, false);
+            } else if(placePath.IsDown()){
+                if(buildingPanel != null && buildingPanel.currentRequest == null){
+                    buildingPanel.OnBuildingClicked(Serviceable.Settings.GetBuilding("Path"));
+                }
             }
         }
 
