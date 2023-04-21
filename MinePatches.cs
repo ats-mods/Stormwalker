@@ -37,12 +37,8 @@ namespace Stormwalker {
         }
 
         public static void Show(Mine mine){
-            Plugin.Log($"x: {mine}");
             var go = mine.FindChild(GO_NAME);
-            Plugin.Log($"0: {go}");
             var renderer = go.GetComponent<SpriteRenderer>();
-            Plugin.Log($"1: {renderer}");
-            Plugin.Log($"2: {mine.state}");
             var areaRect = new Rect(mine.state.field - Vector2Int.one, new Vector2(5, 5));
             renderer.transform.position = new Vector3(areaRect.x, renderer.transform.position.y, areaRect.y);
 			renderer.size = areaRect.size;
