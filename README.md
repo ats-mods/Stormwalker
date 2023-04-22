@@ -28,4 +28,4 @@ Note that I bundle a BepInEx config with my release, which changes the loader's 
 
 ## Disclaimer
 
-Not associated with Eremite games. Eremit Games can't offer assistance with modded games and newer game versions may or may not break your mods. You install mods at your own risk. You may want to backup your save files from `%userprofile%\appdata\locallow\Eremite Games` prior to installing this mod.
+Not associated with Eremite games. Eremite Games can't offer assistance with modded games and newer game versions may or may not break your mods. You install mods at your own risk. You may want to backup your save files from `%userprofile%\appdata\locallow\Eremite Games` prior to installing this mod.
