@@ -10,6 +10,7 @@ using Eremite.View.HUD;
 using TMPro;
 using System.Linq;
 using Eremite.View.HUD.Construction;
+using Eremite.View.Popups.Recipes;
 
 namespace Stormwalker
 {
@@ -81,6 +82,19 @@ namespace Stormwalker
             }
             return true;
         }
+
+        [HarmonyPatch(typeof(IngredientsMenu), nameof(IngredientsMenu.OnIngredientClicked))]
+        [HarmonyPrefix]
+        private static bool OnIngredientClicked(IngredientState state){
+            if (MB.InputService.IsTriggering(MB.InputConfig.InputModifierControl))
+			{
+                var goodModel = Serviceable.Settings.GetGood(state.good);
+                GameMB.GameBlackboardService.RecipesPopupRequested.OnNext(new RecipesPopupRequest(goodModel, true));
+                return false;
+            }
+            return true;
+        }
+
 
         [HarmonyPatch(typeof(TimeScalePanel), nameof(TimeScalePanel.SetUp))]
         [HarmonyPostfix] 
