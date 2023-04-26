@@ -21,8 +21,6 @@ namespace Stormwalker
         {   
             MinePatches.Apply();
             var settings = Serviceable.Settings;
-            settings.GetBuilding("Trading Post").movable = true;
-            settings.buildingsCache.cache = null;
         }
 
         [HarmonyPatch(typeof(Mine), nameof(Mine.SetUp))]
@@ -55,32 +53,6 @@ namespace Stormwalker
         [HarmonyPrefix]
         private static void HideMineArea(ProductionBuildingPanel __instance){
             if(__instance is MinePanel mp) MinePatches.Hide(mp.current);
-        }
-
-        [HarmonyPatch(typeof(BaseRecipeLimitPanel), nameof(BaseRecipeLimitPanel.OnPlusClicked))]
-        [HarmonyPrefix]
-        private static bool OnPlusClicked(BaseRecipeLimitPanel __instance){
-            if(MB.InputService.IsTriggering(MB.InputConfig.InputModifierMore)){
-                __instance.OnValueChanged(__instance.Limit + 10, true);
-                return false;
-            } else if (MB.InputService.IsTriggering(MB.InputConfig.InputModifierControl)){
-                __instance.OnValueChanged(__instance.Limit + 5, true); 
-                return false;
-            }
-            return true;
-        }
-
-        [HarmonyPatch(typeof(BaseRecipeLimitPanel), nameof(BaseRecipeLimitPanel.OnMinusClicked))]
-        [HarmonyPrefix]
-        private static bool OnMinusClicked(BaseRecipeLimitPanel __instance){
-            if(MB.InputService.IsTriggering(MB.InputConfig.InputModifierMore)){
-                __instance.OnValueChanged(__instance.Limit - 10, true);
-                return false;
-            } else if (MB.InputService.IsTriggering(MB.InputConfig.InputModifierControl)){
-                __instance.OnValueChanged(__instance.Limit - 5, true); 
-                return false;
-            }
-            return true;
         }
 
         [HarmonyPatch(typeof(IngredientsMenu), nameof(IngredientsMenu.OnIngredientClicked))]
