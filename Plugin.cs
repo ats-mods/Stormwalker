@@ -39,6 +39,8 @@ namespace Stormwalker
             placeGathererHut = new(UnityEngine.KeyCode.LeftShift);
             superSpeed = new(UnityEngine.KeyCode.Alpha5);
             placePath = new(UnityEngine.KeyCode.P);
+
+            this.gameObject.AddComponent<Woodcutters>();
         }
 
         Vector2 zoomLimit = new Vector2(-20f, -8f);
