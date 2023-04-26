@@ -95,9 +95,20 @@ namespace Stormwalker
             return true;
         }
 
+        [HarmonyPatch(typeof(IngredientSlot), nameof(IngredientSlot.OnClick))]
+        [HarmonyPrefix]
+        private static bool IngredientSlot__OnClick(IngredientSlot __instance){
+            if (MB.InputService.IsTriggering(MB.InputConfig.InputModifierControl))
+			{
+                GameMB.GameBlackboardService.RecipesPopupRequested.OnNext(new RecipesPopupRequest(__instance.GetGood(), true));
+                return false;
+            }
+            return true;
+        }
+
 
         [HarmonyPatch(typeof(TimeScalePanel), nameof(TimeScalePanel.SetUp))]
-        [HarmonyPostfix] 
+        [HarmonyPostfix]
         private static void TimeScalePanel__SetUp(TimeScalePanel __instance){
             var transform = __instance.gameObject.transform;
             var newGo = Object.Instantiate(transform.Find("Slot (5)"), transform);
