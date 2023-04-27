@@ -1,4 +1,3 @@
-using BepInEx;
 using HarmonyLib;
 using Eremite;
 using Eremite.Controller;
@@ -11,6 +10,8 @@ using TMPro;
 using System.Linq;
 using Eremite.View.HUD.Construction;
 using Eremite.View.Popups.Recipes;
+using Eremite.Buildings.UI.Trade;
+using UnityEngine.Events;
 
 namespace Stormwalker
 {
@@ -120,6 +121,14 @@ namespace Stormwalker
         [HarmonyPostfix]
         private static void BuildingPanel__SetUp(BuildingsPanel __instance){
             Plugin.buildingPanel = __instance;
+        }
+
+        [HarmonyPatch(typeof(TradingGoodSlot), nameof(TradingGoodSlot.Start))]
+        [HarmonyPostfix]
+        private static void GoodSlotAddMiddleClick(TradingGoodSlot __instance){
+            __instance.multiButton.AddMiddleListener(
+                new UnityAction( ()=> TradePatches.MatchOffer(__instance)  )
+            );
         }
     }
 }
