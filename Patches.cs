@@ -12,6 +12,7 @@ using Eremite.View.HUD.Construction;
 using Eremite.View.Popups.Recipes;
 using Eremite.Buildings.UI.Trade;
 using UnityEngine.Events;
+using Eremite.WorldMap.Controllers;
 
 namespace Stormwalker
 {
@@ -129,6 +130,27 @@ namespace Stormwalker
             __instance.multiButton.AddMiddleListener(
                 new UnityAction( ()=> TradePatches.MatchOffer(__instance)  )
             );
+        }
+
+        [HarmonyPatch(typeof(TraderPanel), nameof(TraderPanel.Show), typeof(bool))]
+        [HarmonyPostfix]
+        private static void TraderPanel__Show(TraderPanel __instance){
+            var go = __instance.FindChild("Content").transform;
+            var cityScoreTransform = go.Find("StormwalkerCityScore");
+            TextMeshProUGUI text;
+            if(cityScoreTransform == null){
+                var go2 = GameObject.Instantiate(new GameObject(), go);
+                cityScoreTransform = go2.transform;
+                go2.name = "StormwalkerCityScore";
+                cityScoreTransform.localPosition = new Vector3(460, 328, 0);
+                text = go2.AddComponent<TextMeshProUGUI>();
+                text.fontSize = 24;
+                text.fontSizeMax = 24;
+            } else {
+                text = cityScoreTransform.GetComponent<TextMeshProUGUI>();
+            }
+            var cityScore = (Serviceable.TradeService as TradeService).GetScore();
+            text.text = $"City Score: {cityScore}";
         }
     }
 }
