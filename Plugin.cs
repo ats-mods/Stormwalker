@@ -28,6 +28,7 @@ namespace Stormwalker
         KeyboardShortcut placeGathererHut;
         KeyboardShortcut superSpeed;
         KeyboardShortcut placePath;
+        KeyboardShortcut consumptionControl;
 
         private void Awake()
         {
@@ -39,6 +40,7 @@ namespace Stormwalker
             placeGathererHut = new(UnityEngine.KeyCode.LeftShift);
             superSpeed = new(UnityEngine.KeyCode.Alpha5);
             placePath = new(UnityEngine.KeyCode.P);
+            consumptionControl = new(UnityEngine.KeyCode.I);
 
             this.gameObject.AddComponent<Woodcutters>();
         }
@@ -78,6 +80,8 @@ namespace Stormwalker
                 if(buildingPanel != null && buildingPanel.currentRequest == null){
                     buildingPanel.OnBuildingClicked(Serviceable.Settings.GetBuilding("Path"));
                 }
+            } else if(consumptionControl.IsDown() && MB.MetaPerksService.IsConsumptionControlEnabled()){
+                GameMB.GameBlackboardService.ConsumptionPopupRequested.OnNext(true);
             }
         }
 

@@ -21,7 +21,7 @@ namespace Stormwalker
         private static void HookMainControllerSetup()
         {   
             MinePatches.Apply();
-            var settings = Serviceable.Settings;
+            SettingsPatches.Apply();
         }
 
         [HarmonyPatch(typeof(Mine), nameof(Mine.SetUp))]
