@@ -25,8 +25,7 @@ namespace Stormwalker {
         private static void MakeAreaGameObject(FarmModel farmModel){
             var farmGo = farmModel.prefab.gameObject;
             var originalArea = farmGo.transform.Find("Area");
-            prefab = Object.Instantiate(new GameObject(GO_NAME), null, true);
-            prefab.hideFlags = HideFlags.HideAndDontSave;
+            prefab = Utils.MakeGameObject(null, GO_NAME);
             // Object.DontDestroyOnLoad(areaGo);
             // Utils.CopyComponent(originalArea.GetComponent<Transform>(), areaGo);
             Utils.CopyComponent(originalArea.GetComponent<SpriteRenderer>(), prefab);

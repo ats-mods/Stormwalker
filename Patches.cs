@@ -135,11 +135,11 @@ namespace Stormwalker
         [HarmonyPatch(typeof(TraderPanel), nameof(TraderPanel.Show), typeof(bool))]
         [HarmonyPostfix]
         private static void TraderPanel__Show(TraderPanel __instance){
-            var go = __instance.FindChild("Content").transform;
-            var cityScoreTransform = go.Find("StormwalkerCityScore");
+            var go = __instance.FindChild("Content");
+            var cityScoreTransform = go.transform.Find("StormwalkerCityScore");
             TextMeshProUGUI text;
             if(cityScoreTransform == null){
-                var go2 = GameObject.Instantiate(new GameObject(), go);
+                var go2 = Utils.MakeGameObject(go, "StormwalkerCityScore");
                 cityScoreTransform = go2.transform;
                 go2.name = "StormwalkerCityScore";
                 cityScoreTransform.localPosition = new Vector3(460, 328, 0);

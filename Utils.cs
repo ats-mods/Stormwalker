@@ -1,3 +1,5 @@
+using Eremite;
+using Eremite.Tools.Runtime;
 using UnityEngine;
 
 namespace Stormwalker
@@ -22,6 +24,15 @@ namespace Stormwalker
                 prop.SetValue(dst, prop.GetValue(original, null), null);
             }
             return dst as T;
+        }
+
+        public static GameObject MakeGameObject(GameObject parent, string name){
+            var dummyOriginal = new GameObject();
+            var result = GameObject.Instantiate(dummyOriginal, parent?.transform);
+            result.name = name;
+            result.hideFlags = HideFlags.HideAndDontSave;
+            dummyOriginal.Destroy();
+            return result;
         }
     }
 }
