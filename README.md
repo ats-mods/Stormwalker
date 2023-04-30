@@ -8,11 +8,14 @@ A variety pack of convenience features popularly requested for [Against the Stor
 ## Features
 
 - Mines have a working area. No more missing out on a single ore spawn because a 3x3 area can't cover every deposit.
+- You can immediately unassign all woodcutters using **Shift+X**. You can also use **Alt+X** to automatically unassign just enough woodcutters to exactly one Hostility level lower.
+- Trader menu now also shows your City Score (an internal counter that determines which traders can spawn).
+- In the trade menu, you can **Middle Click** to put up the minimal amount of items to match the current offer.
+- **Ctrl+Click** on items in the ingredient wheel will bring you to the recipe panel, similar to left-clicking on other goods icons.
 - Overview zoom Mode. Press **Backspace** in game to immediately gain a better perspective on your map. Press **Backspace** again to zoom back in.
-- Building production limits can now be increased by **5/10** by using **Ctrl-Click**/**Shift-click** respectively.
-- Hovering over a resource deposit and pressing **Shift** will request the construction of the associated gathering camp, similar to how **Shift** while hovering over buildings copies them.
-- Trade post can now be moved. Just hover over it and press **M** to start moving it.
+- Hovering over a resource deposit and pressing the *Copy Building* key (default **Shift**) will request the construction of the associated gathering camp.
 -  **5x** speed mode. Available as additional UI button and the **5** keybind. Gotta go fast!
+- Access Consumption control using the new hotkey **I**
 - Easily place Paths by pressing **P**
 
 ## Installation
