@@ -25,7 +25,6 @@ namespace Stormwalker
         public static BuildingsPanel buildingPanel = null;
 
         KeyboardShortcut zoomOverviewKey;
-        KeyboardShortcut placeGathererHut;
         KeyboardShortcut superSpeed;
         KeyboardShortcut placePath;
         KeyboardShortcut consumptionControl;
@@ -37,12 +36,12 @@ namespace Stormwalker
             harmony = Harmony.CreateAndPatchAll(typeof(Patches));
 
             zoomOverviewKey = new(UnityEngine.KeyCode.Backspace);
-            placeGathererHut = new(UnityEngine.KeyCode.LeftShift);
             superSpeed = new(UnityEngine.KeyCode.Alpha5);
             placePath = new(UnityEngine.KeyCode.P);
             consumptionControl = new(UnityEngine.KeyCode.I);
 
             this.gameObject.AddComponent<Woodcutters>();
+            this.gameObject.AddComponent<BuildingCopier>();
         }
 
         Vector2 zoomLimit = new Vector2(-20f, -8f);
@@ -62,17 +61,6 @@ namespace Stormwalker
                     zoomLimit = cam.zoomLimit;
                     cam.zoomLimit = new Vector2(zoom, zoom);
                     if(animator != null) animator.AdjustDeapthOfField(isOn: false);
-                }
-            } else if(placeGathererHut.IsDown()){
-                var deposit = GameMB.GameInputService.MouseoverObject.Value as ResourceDeposit;
-                if(deposit != null && GameMB.DepositsService.HutsMatrix.ContainsKey(deposit.Model)){
-                    foreach (var building in GameMB.DepositsService.HutsMatrix[deposit.Model])
-                    {
-                        if(GameMB.GameContentService.IsUnlocked(building) && GameMB.ConstructionService.CanConstruct(building)){
-                            GameMB.GameBlackboardService.BuildingConstructionRequested.OnNext(building);
-                            break;
-                        }
-                    }
                 }
             } else if(superSpeed.IsDown()){
                 GameMB.TimeScaleService.Change(SUPER_SPEED_SCALE, true, false);
