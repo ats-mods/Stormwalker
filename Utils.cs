@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Eremite;
 using Eremite.Tools.Runtime;
 using UnityEngine;
@@ -33,6 +36,20 @@ namespace Stormwalker
             result.hideFlags = HideFlags.HideAndDontSave;
             dummyOriginal.Destroy();
             return result;
+        }
+
+        public static T PatchInGameObject<T>(GameObject parent, string name, Action<T> setupScript = null) where T : Component {
+            var gameObject = parent.transform.Find(name)?.gameObject;
+            if(gameObject != null){
+                return gameObject.GetComponent<T>();
+            } else {
+                gameObject = MakeGameObject(parent, name);
+                T result = gameObject.AddComponent<T>();
+                if(setupScript != null){
+                    setupScript.Invoke(result);
+                }
+                return result;
+            }
         }
     }
 }

@@ -136,21 +136,21 @@ namespace Stormwalker
         [HarmonyPostfix]
         private static void TraderPanel__Show(TraderPanel __instance){
             var go = __instance.FindChild("Content");
-            var cityScoreTransform = go.transform.Find("StormwalkerCityScore");
-            TextMeshProUGUI text;
-            if(cityScoreTransform == null){
-                var go2 = Utils.MakeGameObject(go, "StormwalkerCityScore");
-                cityScoreTransform = go2.transform;
-                go2.name = "StormwalkerCityScore";
-                cityScoreTransform.localPosition = new Vector3(460, 328, 0);
-                text = go2.AddComponent<TextMeshProUGUI>();
-                text.fontSize = 24;
-                text.fontSizeMax = 24;
-            } else {
-                text = cityScoreTransform.GetComponent<TextMeshProUGUI>();
-            }
+            var text = Utils.PatchInGameObject<TextMeshProUGUI>(
+                go, 
+                "StormwalkerCityScore", 
+                t => { t.fontSize = 24; t.fontSizeMax = 24; t.transform.localPosition = new Vector3(460, 328, 0); }
+            );
             var cityScore = (Serviceable.TradeService as TradeService).GetScore();
             text.text = $"City Score: {cityScore}";
         }
+
+        // [HarmonyPatch(typeof(WorkersOverlaysManager), "Show")]
+        // [HarmonyPostfix]
+        // private static void InjectOverlay(WorkersOverlaysManager __instance, ProductionBuilding productionBuilding, int index){
+        //     var overlay = __instance.overlays[index];
+        //     OverlayPatches.EnhanceOverlay(overlay);
+
+        // }
     }
 }
