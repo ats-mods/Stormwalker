@@ -4,6 +4,7 @@ using Eremite;
 using Eremite.Buildings;
 using Eremite.Buildings.UI;
 using Eremite.View;
+using Eremite.View.HUD;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
@@ -34,7 +35,12 @@ namespace Stormwalker {
             var original = GameObject.Find("/HUD/WorkshopPanel/Content/RecipesPanel/Slots/RecipeSlot/Prio");
             Copy(original, result, "Plus");
             Copy(original, result, "Minus");
-            Copy(original, result, "Counter");
+            var counter = Copy(original, result, "Counter");
+            var tooltip = counter.GetComponent<SimpleTooltipTrigger>();
+            tooltip.headerKey = Utils.Text("Allowed Residents", "Stormwalker_residents_tooltip_head").key;
+            tooltip.descKey = Utils.Text(
+                "Use the buttons to limit the amount of villagers that may live in this house", "Stormwalker_residents_tooltip_desc"
+            ).key;
             result.transform.localPosition = new Vector3(-200, -125, 0);
             return result;
         }
@@ -43,10 +49,10 @@ namespace Stormwalker {
             houseLimiter.Show(house);
         }
 
-        private static GameObject Copy(GameObject original, GameObject target, string name){
+        private static Transform Copy(GameObject original, GameObject target, string name){
             var made = GameObject.Instantiate(original.transform.Find(name), target.transform);
             made.name = name;
-            return made.gameObject;
+            return made;
         }
     }
 

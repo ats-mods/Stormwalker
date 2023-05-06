@@ -2,6 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Eremite;
+using Eremite.Controller;
+using Eremite.Model;
+using Eremite.Services;
 using Eremite.Tools.Runtime;
 using UnityEngine;
 
@@ -29,11 +32,12 @@ namespace Stormwalker
             return dst as T;
         }
 
-        public static GameObject MakeGameObject(GameObject parent, string name){
+        public static GameObject MakeGameObject(GameObject parent, string name, bool hide = true){
             var dummyOriginal = new GameObject();
             var result = GameObject.Instantiate(dummyOriginal, parent?.transform);
             result.name = name;
-            result.hideFlags = HideFlags.HideAndDontSave;
+            if(hide)
+                result.hideFlags = HideFlags.HideAndDontSave;
             dummyOriginal.Destroy();
             return result;
         }
@@ -50,6 +54,14 @@ namespace Stormwalker
                 }
                 return result;
             }
+        }
+
+        public static LocaText Text(string value, string key){
+            var ts = (TextsService) MainController.Instance.AppServices.TextsService;
+            if(!ts.texts.ContainsKey(key)){
+                ts.texts.Add(key, value);
+            }
+            return new LocaText(){ key = key };
         }
     }
 }
