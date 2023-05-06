@@ -12,7 +12,6 @@ using Eremite.View.HUD.Construction;
 using Eremite.View.Popups.Recipes;
 using Eremite.Buildings.UI.Trade;
 using UnityEngine.Events;
-using Eremite.WorldMap.Controllers;
 
 namespace Stormwalker
 {
@@ -31,10 +30,16 @@ namespace Stormwalker
             MinePatches.AttachPrefab(__instance);
         }
 
+        [HarmonyPatch(typeof(HousePanel), "Awake")]
+        [HarmonyPostfix]
+        private static void SetUpHousePanel(HousePanel __instance){
+            HousePatches.PatchPanel(__instance);
+        }
+
         [HarmonyPatch(typeof(HousePanel), "Show")]
         [HarmonyPostfix]
-        private static void SetUpHouse(HousePanel __instance){
-            HousePatches.Apply(__instance);
+        private static void Show(House house){
+            HousePatches.Show(house);
         }
 
         [HarmonyPatch(typeof(OreService), nameof(OreService.GetOreUnder), typeof(Vector2Int), typeof(Vector2Int))]
