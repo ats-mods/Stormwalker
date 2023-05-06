@@ -12,6 +12,5 @@ namespace Stormwalker {
             var service = Serviceable.TextsService as TextsService;
             service.texts["MetaReward_ConsumptionControlActivation_Name"] += " (I)";
         }
-
     }
 }
