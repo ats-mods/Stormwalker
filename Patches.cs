@@ -31,6 +31,12 @@ namespace Stormwalker
             MinePatches.AttachPrefab(__instance);
         }
 
+        [HarmonyPatch(typeof(HousePanel), "Show")]
+        [HarmonyPostfix]
+        private static void SetUpHouse(HousePanel __instance){
+            HousePatches.Apply(__instance);
+        }
+
         [HarmonyPatch(typeof(OreService), nameof(OreService.GetOreUnder), typeof(Vector2Int), typeof(Vector2Int))]
         [HarmonyPrefix]
         private static void ExtendMineArea(ref Vector2Int isoPos, ref Vector2Int size)
