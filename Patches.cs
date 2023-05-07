@@ -13,6 +13,7 @@ using Eremite.View.Popups.Recipes;
 using Eremite.Buildings.UI.Trade;
 using UnityEngine.Events;
 using Eremite.View.HUD.Reputation;
+using Eremite.Characters.Villagers;
 
 namespace Stormwalker
 {
@@ -62,7 +63,9 @@ namespace Stormwalker
         [HarmonyPostfix]
         private static void OverrideProduction(BuildingProductionSlot __instance) => WorkerSlotPatches.OverrideProductionIcon(__instance);
 
-        
+        [HarmonyPatch(typeof(VillagersService), nameof(VillagersService.RemoveFromProfession))]
+        [HarmonyPostfix]
+        private static void SyncStateVillagerGone(Villager villager) => WorkerSlotPatches.Remove(villager);
 
         [HarmonyPatch(typeof(OreService), nameof(OreService.GetOreUnder), typeof(Vector2Int), typeof(Vector2Int))]
         [HarmonyPrefix]

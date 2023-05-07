@@ -17,19 +17,20 @@ namespace Stormwalker {
             if(status == null){
                 status = Utils.LoadSprite("production.png");
             }
-            Plugin.Log($"Queueing {villager.Id} from unassign");
             toUnassign.Add(villager.Id);
         }
 
         public static void TryUnassign(ProductionState production){
-            Plugin.Log($"Try to remove {production.worker} from list");
             if(toUnassign.Remove(production.worker)){
-                Plugin.Log($"Removing villager {production.worker} from list");
                 var service = GameMB.VillagersService;
 
                 Villager villager = service.GetVillager(production.worker);
                 service.ReleaseFromProfession(villager, false);
             }
+        }
+
+        public static void Remove(Villager villager){
+            toUnassign.Remove(villager.Id);
         }
 
         public static void OverrideProductionIcon(BuildingProductionSlot slot){
