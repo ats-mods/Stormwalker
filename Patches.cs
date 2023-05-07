@@ -45,7 +45,7 @@ namespace Stormwalker
         [HarmonyPatch(typeof(House), nameof(House.GetPlacesLeft))]
         [HarmonyPrefix]
         private static bool House__GetPlacesLeft(House __instance, ref int __result){
-            __result = HouseLimitState.GetAllowedResidents(__instance) - __instance.state.residents.Count;
+            __result = HousePatches.houseLimiter.state.GetAllowedResidents(__instance) - __instance.state.residents.Count;
             return false; // This skips the original method
         }
 

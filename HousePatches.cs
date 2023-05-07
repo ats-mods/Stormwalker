@@ -7,6 +7,7 @@ using Eremite.Buildings.UI;
 using Eremite.View;
 using Eremite.View.HUD;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -16,17 +17,17 @@ namespace Stormwalker {
     public static class HousePatches{
 
         private static GameObject residentSlider;
-        private static HouseLimiter houseLimiter;
+        public static HouseLimiter houseLimiter;
 
         public static void PatchPanel(HousePanel panel){
             var go = panel.FindChild("Content/ResidentsPanel");
             residentSlider = CreateResidentSlider(go);
             houseLimiter = residentSlider.AddComponent<HouseLimiter>();
             houseLimiter.SetUp();
-            Plugin.Log($"Created house limiter: {houseLimiter}");
 
             //Minsize for panel so the new slider wont fall outside of it.
             go.GetComponent<SimpleVerticalResizer>().minHeight = 200;
+
         }
 
         private static GameObject CreateResidentSlider(GameObject parent){
@@ -56,23 +57,7 @@ namespace Stormwalker {
         }
     }
 
-    public static class HouseLimitState {
-        private static Dictionary<int, int> slotsPerHouse = new();
-
-        public static int GetAllowedResidents(House house){
-            return Math.Min(house.GetHousingPlaces(), slotsPerHouse.GetValueOrDefault(house.Id, 10));
-        }
-
-        public static void SetAllowedResidents(House house, int amount){
-            if(amount == GetAllowedResidents(house)){
-                slotsPerHouse.Remove(house.Id);
-            } else {
-                slotsPerHouse[house.Id] = amount;
-            }
-        }
-    }
-
-    class HouseLimiter: GameMB {
+    public class HouseLimiter: GameMB {
 
         public void SetUp() {
             base.EnsureComponent(counter, out counter, "Counter/Text");
@@ -82,6 +67,10 @@ namespace Stormwalker {
             this.minusButton.AddCallback(new UnityAction(this.OnMinusClicked));
         }
 
+        private void PrepareForEvents(){
+            GameMB.GameBlackboardService.HouseRemoved.Subscribe(h => state.Remove(h)).AddTo(this);
+        }
+
         public void Show(House house){
             this.house = house;
             RefreshCounter();
@@ -89,7 +78,7 @@ namespace Stormwalker {
         }
 
         private void OnPlusClicked() => AdjustResidents(1);
-        
+
         private void OnMinusClicked(){
             int newAllowed = AdjustResidents(-1);
             if(newAllowed < house.state.residents.Count){
@@ -99,7 +88,7 @@ namespace Stormwalker {
 
         private int AdjustResidents(int delta){
             int newAllowed = this.Count + delta;
-            HouseLimitState.SetAllowedResidents(house, newAllowed);
+            state.SetAllowedResidents(house, newAllowed);
             RefreshCounter();
             RefreshButtons();
             return newAllowed;
@@ -121,12 +110,30 @@ namespace Stormwalker {
             }
 		}
 
-        private int Count => HouseLimitState.GetAllowedResidents(this.house);
+        private int Count => state.GetAllowedResidents(this.house);
+
+        public HouseLimitState state = new HouseLimitState();
 
         private Button plusButton;
         private Button minusButton;
         private TextMeshProUGUI counter;
 
         private House house;
+    }
+
+    public class HouseLimitState {
+        private Dictionary<int, int> slotsPerHouse = new();
+
+        public void SetAllowedResidents(House house, int amount){
+            if(amount == GetAllowedResidents(house)){
+                slotsPerHouse.Remove(house.Id);
+            } else {
+                slotsPerHouse[house.Id] = amount;
+            }
+        }
+
+        public int GetAllowedResidents(House house) => Math.Min(house.GetHousingPlaces(), slotsPerHouse.GetValueOrDefault(house.Id, 10));
+
+        public void Remove(House house) => slotsPerHouse.Remove(house.Id);
     }
 }
