@@ -12,6 +12,7 @@ using Eremite.View.HUD.Construction;
 using Eremite.View.Popups.Recipes;
 using Eremite.Buildings.UI.Trade;
 using UnityEngine.Events;
+using Eremite.View.HUD.Reputation;
 
 namespace Stormwalker
 {
@@ -26,21 +27,15 @@ namespace Stormwalker
 
         [HarmonyPatch(typeof(Mine), nameof(Mine.SetUp))]
         [HarmonyPostfix]
-        private static void SetUpMine(Mine __instance){
-            MinePatches.AttachPrefab(__instance);
-        }
+        private static void SetUpMine(Mine __instance) => MinePatches.AttachPrefab(__instance);
 
         [HarmonyPatch(typeof(HousePanel), nameof(HousePanel.Awake))]
         [HarmonyPostfix]
-        private static void SetUpHousePanel(HousePanel __instance){
-            HousePatches.PatchPanel(__instance);
-        }
+        private static void SetUpHousePanel(HousePanel __instance) => HousePatches.PatchPanel(__instance);
 
         [HarmonyPatch(typeof(HousePanel), nameof(HousePanel.Show))]
         [HarmonyPostfix]
-        private static void House__Show(House house){
-            HousePatches.Show(house);
-        }
+        private static void House__Show(House house) => HousePatches.Show(house);
 
         [HarmonyPatch(typeof(House), nameof(House.GetPlacesLeft))]
         [HarmonyPrefix]
@@ -48,6 +43,20 @@ namespace Stormwalker
             __result = HousePatches.houseLimiter.state.GetAllowedResidents(__instance) - __instance.state.residents.Count;
             return false; // This skips the original method
         }
+
+        [HarmonyPatch(typeof(BuildingWorkerSlot), nameof(BuildingWorkerSlot.Unassign))]
+        [HarmonyPrefix]
+        private static bool BuildingWorkerSlot__Unassign(BuildingWorkerSlot __instance){
+            if (MB.InputService.IsTriggering(MB.InputConfig.InputModifierControl)) {
+                WorkerSlotPatches.QueueUnassign(__instance.villager);
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(ProductionBuilding), nameof(ProductionBuilding.DispatchProductionFinished))]
+        [HarmonyPostfix]
+        private static void ProductionBuilding__DispatchProductionFinished(ProductionState production) => WorkerSlotPatches.TryUnassign(production);
 
         [HarmonyPatch(typeof(OreService), nameof(OreService.GetOreUnder), typeof(Vector2Int), typeof(Vector2Int))]
         [HarmonyPrefix]
