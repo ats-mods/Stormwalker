@@ -12,7 +12,7 @@ namespace Stormwalker {
             if (MB.InputService.WasTriggered(MB.InputConfig.CopyBuilding, false))
 			{
 				var deposit = GameInputService.MouseoverObject.Value as ResourceDeposit;
-                if(deposit != null && DepositsService.HutsMatrix.ContainsKey(deposit.Model)){
+                if(deposit != null && deposit.State.isAvailable && DepositsService.HutsMatrix.ContainsKey(deposit.Model)){
                     foreach (var building in DepositsService.HutsMatrix[deposit.Model])
                     {
                         if(GameContentService.IsUnlocked(building) && ConstructionService.CanConstruct(building)){
