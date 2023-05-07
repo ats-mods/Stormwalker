@@ -16,6 +16,7 @@ namespace Stormwalker {
             var gap = GetOfferGap(slot, myPanel, otherPanel);
             var itemsNeeded = gap / GetValueOf(slot, myPanel);
             var itemsToOffer = (int) Math.Ceiling(itemsNeeded);
+            // Plugin.Log($"{gap}, {itemsNeeded}, {itemsToOffer}, {myPanel.showSellValue}, {GetValueOf(slot, myPanel)}");
             if(!myPanel.showSellValue && itemsToOffer > itemsNeeded)
                 itemsToOffer -= 1;
 
@@ -40,7 +41,7 @@ namespace Stormwalker {
 
         private static double GetOfferGap(TradingGoodSlot slot, TradingGoodsPanel myPanel, TradingGoodsPanel otherPanel){
             var currentGap = OfferPrice(otherPanel) - OfferPrice(myPanel);
-            return currentGap + OfferPriceOfTradeGood(slot, myPanel);
+            return Math.Round(currentGap + OfferPriceOfTradeGood(slot, myPanel), 2);
         }
 
         private static double OfferPrice(TradingGoodsPanel panel){
@@ -48,7 +49,7 @@ namespace Stormwalker {
             return panel.showSellValue? trade.GetValueInCurrency(panel.Offer) : trade.GetBuyValueInCurrency(panel.Offer);
         }
 
-        private static double OfferPriceOfTradeGood(TradingGoodSlot slot, TradingGoodsPanel myPanel){ 
+        private static double OfferPriceOfTradeGood(TradingGoodSlot slot, TradingGoodsPanel myPanel){
             var trade = GameMB.TradeService as TradeService;
             var playerSells = myPanel.showSellValue;
             var tradingGood = myPanel.Offer.goods[slot.GoodName];
