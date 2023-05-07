@@ -13,11 +13,13 @@ namespace Stormwalker {
         private static Sprite status = null;
         private static HashSet<int> toUnassign = new();
 
-        public static void QueueUnassign(Villager villager){
+        public static void QueueToggleUnassign(Villager villager){
             if(status == null){
                 status = Utils.LoadSprite("production.png");
             }
-            toUnassign.Add(villager.Id);
+            if(!toUnassign.Remove(villager.Id)){
+                toUnassign.Add(villager.Id);
+            }
         }
 
         public static void TryUnassign(ProductionState production){

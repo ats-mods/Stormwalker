@@ -49,7 +49,7 @@ namespace Stormwalker
         [HarmonyPrefix]
         private static bool BuildingWorkerSlot__Unassign(BuildingWorkerSlot __instance){
             if (MB.InputService.IsTriggering(MB.InputConfig.InputModifierControl)) {
-                WorkerSlotPatches.QueueUnassign(__instance.villager);
+                WorkerSlotPatches.QueueToggleUnassign(__instance.villager);
                 return false;
             }
             return true;
