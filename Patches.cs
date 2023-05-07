@@ -30,16 +30,23 @@ namespace Stormwalker
             MinePatches.AttachPrefab(__instance);
         }
 
-        [HarmonyPatch(typeof(HousePanel), "Awake")]
+        [HarmonyPatch(typeof(HousePanel), nameof(HousePanel.Awake))]
         [HarmonyPostfix]
         private static void SetUpHousePanel(HousePanel __instance){
             HousePatches.PatchPanel(__instance);
         }
 
-        [HarmonyPatch(typeof(HousePanel), "Show")]
+        [HarmonyPatch(typeof(HousePanel), nameof(HousePanel.Show))]
         [HarmonyPostfix]
-        private static void Show(House house){
+        private static void House__Show(House house){
             HousePatches.Show(house);
+        }
+
+        [HarmonyPatch(typeof(House), nameof(House.GetPlacesLeft))]
+        [HarmonyPrefix]
+        private static bool House__GetPlacesLeft(House __instance, ref int __result){
+            __result = HouseLimitState.GetAllowedResidents(__instance) - __instance.state.residents.Count;
+            return false; // This skips the original method
         }
 
         [HarmonyPatch(typeof(OreService), nameof(OreService.GetOreUnder), typeof(Vector2Int), typeof(Vector2Int))]

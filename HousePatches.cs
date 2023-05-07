@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Eremite;
 using Eremite.Buildings;
 using Eremite.Buildings.UI;
 using Eremite.View;
 using Eremite.View.HUD;
-using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -62,6 +62,14 @@ namespace Stormwalker {
         public static int GetAllowedResidents(House house){
             return Math.Min(house.GetHousingPlaces(), slotsPerHouse.GetValueOrDefault(house.Id, 10));
         }
+
+        public static void SetAllowedResidents(House house, int amount){
+            if(amount == GetAllowedResidents(house)){
+                slotsPerHouse.Remove(house.Id);
+            } else {
+                slotsPerHouse[house.Id] = amount;
+            }
+        }
     }
 
     class HouseLimiter: GameMB {
@@ -77,20 +85,43 @@ namespace Stormwalker {
         public void Show(House house){
             this.house = house;
             RefreshCounter();
+            RefreshButtons();
+        }
+
+        private void OnPlusClicked() => AdjustResidents(1);
+        
+        private void OnMinusClicked(){
+            int newAllowed = AdjustResidents(-1);
+            if(newAllowed < house.state.residents.Count){
+                house.Leave(house.state.residents.First());
+            }
+        }
+
+        private int AdjustResidents(int delta){
+            int newAllowed = this.Count + delta;
+            HouseLimitState.SetAllowedResidents(house, newAllowed);
+            RefreshCounter();
+            RefreshButtons();
+            return newAllowed;
         }
 
         private void RefreshCounter(){
-            int residents = HouseLimitState.GetAllowedResidents(house);
-            counter.text = residents.ToString();
+            counter.text = Count.ToString();
         }
 
-        private void OnPlusClicked(){
+        private void RefreshButtons()
+		{
+            if(house.state.finished){
+                int count = this.Count;
+                this.plusButton.interactable = (count < house.GetHousingPlaces());
+                this.minusButton.interactable = (count > 0);
+            } else {
+                this.minusButton.interactable = false;
+                this.plusButton.interactable = false;
+            }
+		}
 
-        }
-
-        private void OnMinusClicked(){
-            
-        }
+        private int Count => HouseLimitState.GetAllowedResidents(this.house);
 
         private Button plusButton;
         private Button minusButton;
