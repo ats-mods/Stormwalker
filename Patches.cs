@@ -56,7 +56,13 @@ namespace Stormwalker
 
         [HarmonyPatch(typeof(ProductionBuilding), nameof(ProductionBuilding.DispatchProductionFinished))]
         [HarmonyPostfix]
-        private static void ProductionBuilding__DispatchProductionFinished(ProductionState production) => WorkerSlotPatches.TryUnassign(production);
+        private static void UnassignSinceDone(ProductionState production) => WorkerSlotPatches.TryUnassign(production);
+
+        [HarmonyPatch(typeof(BuildingProductionSlot), nameof(BuildingProductionSlot.ShowProduction))]
+        [HarmonyPostfix]
+        private static void OverrideProduction(BuildingProductionSlot __instance) => WorkerSlotPatches.OverrideProductionIcon(__instance);
+
+        
 
         [HarmonyPatch(typeof(OreService), nameof(OreService.GetOreUnder), typeof(Vector2Int), typeof(Vector2Int))]
         [HarmonyPrefix]

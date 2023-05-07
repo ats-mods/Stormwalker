@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Eremite;
@@ -62,6 +63,15 @@ namespace Stormwalker
                 ts.texts.Add(key, value);
             }
             return new LocaText(){ key = key };
+        }
+
+        public static Sprite LoadSprite(string file) {
+            var path = Path.Combine(BepInEx.Paths.PluginPath, "assets", file);
+            byte[] fileData = File.ReadAllBytes(path);
+            Texture2D tex = new Texture2D(4, 4, TextureFormat.DXT5, false);
+            tex.LoadImage(fileData);
+            var sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 50.0f);
+            return sprite;
         }
     }
 }
