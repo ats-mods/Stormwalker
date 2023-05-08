@@ -9,14 +9,13 @@ namespace Stormwalker {
 
         public static void MatchOffer(TradingGoodSlot slot){
             var myPanel = GetGoodsPanel(slot);
-            Plugin.Log($"{myPanel == null}, {slot}");
             if(myPanel == null) 
                 return;
             var otherPanel = CounterpartOf(myPanel);
             var gap = GetOfferGap(slot, myPanel, otherPanel);
-            var itemsNeeded = gap / GetValueOf(slot, myPanel);
+            var itemsNeeded = Math.Round(gap / GetValueOf(slot, myPanel), 2);
             var itemsToOffer = (int) Math.Ceiling(itemsNeeded);
-            // Plugin.Log($"{gap}, {itemsNeeded}, {itemsToOffer}, {myPanel.showSellValue}, {GetValueOf(slot, myPanel)}");
+            Plugin.Log($"{gap}, {itemsNeeded}, {itemsToOffer}, {myPanel.showSellValue}, {GetValueOf(slot, myPanel)}");
             if(!myPanel.showSellValue && itemsToOffer > itemsNeeded)
                 itemsToOffer -= 1;
 
