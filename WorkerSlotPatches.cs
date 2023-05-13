@@ -4,19 +4,36 @@ using Eremite;
 using Eremite.Buildings;
 using Eremite.Buildings.UI;
 using Eremite.Characters.Villagers;
+using Eremite.Services.Analytics;
+using Eremite.View.HUD;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Stormwalker {
 
     public static class WorkerSlotPatches {
+        static readonly string MARKER_NAME = "StormwalkerMarker";
 
-        private static Sprite status = null;
+        private static Sprite marker = null;
         private static HashSet<int> toUnassign = new();
 
-        public static void QueueToggleUnassign(Villager villager){
-            if(status == null){
-                status = Utils.LoadSprite("production.png");
+        public static void PutMarkerIn(BuildingWorkerSlot slot){
+            var statusIcon = slot.transform.Find("StatusIcon")?.gameObject;
+            if(statusIcon == null)
+                return;
+            var go = Utils.MakeGameObject(statusIcon, MARKER_NAME, true);
+            go.SetActive(false);
+            go.transform.localPosition = new Vector3(-10, 10, 0);
+            go.transform.SetScale(0.2f);
+            var myImage = go.AddComponent<Image>();
+            if (marker == null){
+                var markerImage = Utils.StealComponent<Image>("/HUD/SeasonEffectsInitialPanel/Content/FieldEffects/NamedEffectSlot/Marker");
+                marker = markerImage.sprite;
             }
+            myImage.sprite = marker;
+        }
+
+        public static void QueueToggleUnassign(Villager villager){
             if(!toUnassign.Remove(villager.Id)){
                 toUnassign.Add(villager.Id);
             }
@@ -35,10 +52,13 @@ namespace Stormwalker {
             toUnassign.Remove(villager.Id);
         }
 
-        public static void OverrideProductionIcon(BuildingProductionSlot slot){
-            if(toUnassign.Contains(slot.villager.Id)){
-                slot.SetStatus(status, ()=> "Producing; Worker set to leave once finished");
-            }
+        public static bool UpdateMarkerStatus(BuildingProductionSlot slot){
+            var go = slot.transform.Find($"StatusIcon/{MARKER_NAME}");
+            if(go == null)
+                return false;
+            bool result = toUnassign.Contains(slot.villager.Id);
+            go.SetActive(result);
+            return result;
         }
     }
 }

@@ -1,12 +1,9 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
 using Eremite;
 using Eremite.Controller;
 using Eremite.Model;
 using Eremite.Services;
-using Eremite.Tools.Runtime;
 using UnityEngine;
 
 namespace Stormwalker
@@ -55,6 +52,11 @@ namespace Stormwalker
                 }
                 return result;
             }
+        }
+
+        public static T StealComponent<T>(string path) where T : Component {
+            var go = GameObject.Find(path);
+            return go.GetComponent<T>();
         }
 
         public static LocaText Text(string value, string key){

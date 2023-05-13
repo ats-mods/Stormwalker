@@ -12,8 +12,8 @@ using Eremite.View.HUD.Construction;
 using Eremite.View.Popups.Recipes;
 using Eremite.Buildings.UI.Trade;
 using UnityEngine.Events;
-using Eremite.View.HUD.Reputation;
 using Eremite.Characters.Villagers;
+using System;
 
 namespace Stormwalker
 {
@@ -45,6 +45,10 @@ namespace Stormwalker
             return false; // This skips the original method
         }
 
+        [HarmonyPatch(typeof(BuildingWorkerSlot), nameof(BuildingWorkerSlot.Start))]
+        [HarmonyPostfix]
+        private static void BuildingWorkerSlot__Start(BuildingWorkerSlot __instance) => WorkerSlotPatches.PutMarkerIn(__instance);
+
         [HarmonyPatch(typeof(BuildingWorkerSlot), nameof(BuildingWorkerSlot.Unassign))]
         [HarmonyPrefix]
         private static bool BuildingWorkerSlot__Unassign(BuildingWorkerSlot __instance){
@@ -59,9 +63,14 @@ namespace Stormwalker
         [HarmonyPostfix]
         private static void UnassignSinceDone(ProductionState production) => WorkerSlotPatches.TryUnassign(production);
 
-        [HarmonyPatch(typeof(BuildingProductionSlot), nameof(BuildingProductionSlot.ShowProduction))]
-        [HarmonyPostfix]
-        private static void OverrideProduction(BuildingProductionSlot __instance) => WorkerSlotPatches.OverrideProductionIcon(__instance);
+        [HarmonyPatch(typeof(BuildingProductionSlot), nameof(BuildingProductionSlot.SetStatus))]
+        [HarmonyPrefix]
+        private static void OverrideProduction(BuildingProductionSlot __instance, ref Func<string> descSource){
+            if(WorkerSlotPatches.UpdateMarkerStatus(__instance)){
+                string original = descSource.Invoke();
+                descSource = (() => original + "; worker set to leave once production finishes");
+            }
+        }
 
         [HarmonyPatch(typeof(VillagersService), nameof(VillagersService.RemoveFromProfession))]
         [HarmonyPostfix]
@@ -121,7 +130,7 @@ namespace Stormwalker
         [HarmonyPostfix]
         private static void TimeScalePanel__SetUp(TimeScalePanel __instance){
             var transform = __instance.gameObject.transform;
-            var newGo = Object.Instantiate(transform.Find("Slot (5)"), transform);
+            var newGo = GameObject.Instantiate(transform.Find("Slot (5)"), transform);
             newGo.name = "Slot (6)";
             newGo.localPosition = new Vector3(90, 90, 0);
             newGo.GetComponent<TimeScaleSlot>().timeScale = 5f;
@@ -168,7 +177,7 @@ namespace Stormwalker
             );
         }
 
-        [HarmonyPatch(typeof(TraderPanel), nameof(TraderPanel.Show), typeof(bool))]
+        [HarmonyPatch(typeof(TraderPanel), nameof(TraderPanel.Show))]
         [HarmonyPostfix]
         private static void TraderPanel__Show(TraderPanel __instance){
             var go = __instance.FindChild("Content");
