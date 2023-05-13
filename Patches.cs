@@ -14,6 +14,8 @@ using Eremite.Buildings.UI.Trade;
 using UnityEngine.Events;
 using Eremite.Characters.Villagers;
 using System;
+using UniRx;
+using Eremite.Controller.Generator;
 
 namespace Stormwalker
 {
@@ -24,6 +26,13 @@ namespace Stormwalker
         {   
             MinePatches.Apply();
             SettingsPatches.Apply();
+        }
+
+        [HarmonyPatch(typeof(GameLoader), nameof(GameLoader.LoadState))]
+        [HarmonyPostfix]
+        private static void Load(GameLoader __instance)
+        {
+            Plugin.SetupState(__instance.state ==  null);
         }
 
         [HarmonyPatch(typeof(Mine), nameof(Mine.SetUp))]

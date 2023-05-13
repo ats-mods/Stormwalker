@@ -122,7 +122,7 @@ namespace Stormwalker {
     }
 
     public class HouseLimitState {
-        private Dictionary<int, int> slotsPerHouse = new();
+        private Dictionary<int, int> slotsPerHouse => Plugin.State.slotsPerHouse; 
 
         public void SetAllowedResidents(House house, int amount){
             if(amount == GetAllowedResidents(house)){

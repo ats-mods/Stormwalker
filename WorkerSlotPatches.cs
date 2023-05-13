@@ -15,7 +15,7 @@ namespace Stormwalker {
         static readonly string MARKER_NAME = "StormwalkerMarker";
 
         private static Sprite marker = null;
-        private static HashSet<int> toUnassign = new();
+        private static HashSet<int> toUnassign => Plugin.State.workersToUnassign;
 
         public static void PutMarkerIn(BuildingWorkerSlot slot){
             var statusIcon = slot.transform.Find("StatusIcon")?.gameObject;
