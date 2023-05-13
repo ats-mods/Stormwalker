@@ -17,6 +17,8 @@ A variety pack of convenience features popularly requested for [Against the Stor
 -  **5x** speed mode. Available as additional UI button and the **5** keybind. Gotta go fast!
 - Access Consumption control using the new hotkey **I**
 - Easily place Paths by pressing **P**
+- **Ctrl+Right Click** workers in a building to schedule them to leave their position as soon as their next production cycle finishes
+- You can now set a limit on the amount of villagers allowed in an individual house
 
 ## Installation
 
