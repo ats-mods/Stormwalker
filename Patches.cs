@@ -54,15 +54,11 @@ namespace Stormwalker
             return false; // This skips the original method
         }
 
-        [HarmonyPatch(typeof(BuildingWorkerSlot), nameof(BuildingWorkerSlot.Start))]
-        [HarmonyPostfix]
-        private static void BuildingWorkerSlot__Start(BuildingWorkerSlot __instance) => WorkerSlotPatches.PutMarkerIn(__instance);
-
         [HarmonyPatch(typeof(BuildingWorkerSlot), nameof(BuildingWorkerSlot.Unassign))]
         [HarmonyPrefix]
         private static bool BuildingWorkerSlot__Unassign(BuildingWorkerSlot __instance){
             if (MB.InputService.IsTriggering(MB.InputConfig.InputModifierControl)) {
-                WorkerSlotPatches.QueueToggleUnassign(__instance.villager);
+                WorkerSlotPatches.QueueToggleUnassign(__instance);
                 return false;
             }
             return true;

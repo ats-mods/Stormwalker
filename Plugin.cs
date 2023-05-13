@@ -24,7 +24,7 @@ namespace Stormwalker
         public static void Log(object obj) => Instance.Logger.LogInfo(obj);
         public static void Error(object obj) => Instance.Logger.LogError(obj);
 
-        public static PluginState State {get; private set;}
+        public static PluginState State {get; private set;} = new();
 
         public static BuildingsPanel buildingPanel = null;
 
