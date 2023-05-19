@@ -38,18 +38,16 @@ namespace Stormwalker {
             return workers;
         }
 
-
-
         private bool canLowerHostility(out int amount){
             int woodcutterHostility = HostilityService.GetPointsFor(HostilitySource.Woodcutter);
             if(woodcutterHostility <= 0){
                 amount = -1;
                 return false;
             }
-            int currentPoints = HostilityService.Points.Value;
+            int currentPoints = HostilityService.Points.Value + 1;
             int numWoodcutters = HostilityService.GetSourceAmount(HostilitySource.Woodcutter);
             amount = (int)Math.Ceiling((double)currentPoints * numWoodcutters / woodcutterHostility);
-            Plugin.Log($"hpw: {woodcutterHostility}, cp: {currentPoints}, nw: {numWoodcutters} amount: {amount}");
+            // Plugin.Log($"tot wc host: {woodcutterHostility}, cp: {currentPoints}, nw: {numWoodcutters} amount: {amount}");
             return numWoodcutters >= amount;
         }
 
