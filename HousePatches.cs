@@ -125,7 +125,7 @@ namespace Stormwalker {
         private Dictionary<int, int> slotsPerHouse => Plugin.State.slotsPerHouse; 
 
         public void SetAllowedResidents(House house, int amount){
-            if(amount == GetAllowedResidents(house)){
+            if(amount == house.GetHousingPlaces()){
                 slotsPerHouse.Remove(house.Id);
             } else {
                 slotsPerHouse[house.Id] = amount;
