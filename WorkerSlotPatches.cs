@@ -27,7 +27,7 @@ namespace Stormwalker {
             go.transform.SetScale(0.2f);
             var myImage = go.AddComponent<Image>();
             if (marker == null){
-                var markerImage = Utils.StealComponent<Image>("/HUD/SeasonEffectsInitialPanel/Content/FieldEffects/NamedEffectSlot/Marker");
+                var markerImage = Utils.StealComponent<Image>("/HUD/GoodsHUD/SacrificeMarker/Content");
                 marker = markerImage.sprite;
             }
             myImage.sprite = marker;
