@@ -20,12 +20,6 @@ using Eremite.Controller.Generator;
 namespace Stormwalker
 {
     internal static class Patches{
-        [HarmonyPatch(typeof(MainController), nameof(MainController.OnServicesReady))]
-        [HarmonyPostfix]
-        private static void HookMainControllerSetup()
-        {   
-            MinePatches.Apply();
-        }
 
         [HarmonyPatch(typeof(GameLoader), nameof(GameLoader.LoadState))]
         [HarmonyPostfix]
@@ -33,10 +27,6 @@ namespace Stormwalker
         {
             Plugin.SetupState(__instance.state ==  null);
         }
-
-        [HarmonyPatch(typeof(Mine), nameof(Mine.SetUp))]
-        [HarmonyPostfix]
-        private static void SetUpMine(Mine __instance) => MinePatches.AttachPrefab(__instance);
 
         [HarmonyPatch(typeof(HousePanel), nameof(HousePanel.Awake))]
         [HarmonyPostfix]
@@ -79,32 +69,6 @@ namespace Stormwalker
         [HarmonyPatch(typeof(VillagersService), nameof(VillagersService.RemoveFromProfession))]
         [HarmonyPostfix]
         private static void SyncStateVillagerGone(Villager villager) => WorkerSlotPatches.Remove(villager);
-
-        [HarmonyPatch(typeof(OreService), nameof(OreService.GetOreUnder), typeof(Vector2Int), typeof(Vector2Int))]
-        [HarmonyPrefix]
-        private static void ExtendMineArea(ref Vector2Int isoPos, ref Vector2Int size)
-        { 
-            isoPos -= Vector2Int.one;
-            size += 2*Vector2Int.one;
-        }
-
-        [HarmonyPatch(typeof(Mine), nameof(Mine.OnPlacingStarted))]
-        [HarmonyPrefix]
-        private static void ShowMineArea(Mine __instance) => MinePatches.Show(__instance);
-
-        [HarmonyPatch(typeof(MinePanel), nameof(MinePanel.Show))]
-        [HarmonyPostfix]
-        private static void ShowMineAreaPanel(Mine mine) => MinePatches.Show(mine);
-
-        [HarmonyPatch(typeof(Mine), nameof(Mine.OnPlaced))]
-        [HarmonyPrefix]    
-        private static void HideMineArea(Mine __instance) => MinePatches.Hide(__instance);
-
-        [HarmonyPatch(typeof(ProductionBuildingPanel), nameof(ProductionBuildingPanel.Hide))]
-        [HarmonyPrefix]
-        private static void HideMineArea(ProductionBuildingPanel __instance){
-            if(__instance is MinePanel mp) MinePatches.Hide(mp.current);
-        }
 
         [HarmonyPatch(typeof(IngredientsMenu), nameof(IngredientsMenu.OnIngredientClicked))]
         [HarmonyPrefix]
