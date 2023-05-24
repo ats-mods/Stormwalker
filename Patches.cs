@@ -25,7 +25,6 @@ namespace Stormwalker
         private static void HookMainControllerSetup()
         {   
             MinePatches.Apply();
-            SettingsPatches.Apply();
         }
 
         [HarmonyPatch(typeof(GameLoader), nameof(GameLoader.LoadState))]
