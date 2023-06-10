@@ -30,7 +30,6 @@ namespace Stormwalker
 
         KeyboardShortcut zoomOverviewKey;
         KeyboardShortcut superSpeed;
-        KeyboardShortcut placePath;
 
         private void Awake()
         {
@@ -40,7 +39,6 @@ namespace Stormwalker
 
             zoomOverviewKey = new(UnityEngine.KeyCode.Backspace);
             superSpeed = new(UnityEngine.KeyCode.Alpha5);
-            placePath = new(UnityEngine.KeyCode.P);
 
             this.gameObject.AddComponent<Woodcutters>();
             this.gameObject.AddComponent<BuildingCopier>();
@@ -90,10 +88,6 @@ namespace Stormwalker
                 }
             } else if(superSpeed.IsDown()){
                 GameMB.TimeScaleService.Change(SUPER_SPEED_SCALE, true, false);
-            } else if(placePath.IsDown()){
-                if(buildingPanel != null && buildingPanel.currentRequest == null){
-                    buildingPanel.OnBuildingClicked(Serviceable.Settings.GetBuilding("Path"));
-                }
             }
         }
 
