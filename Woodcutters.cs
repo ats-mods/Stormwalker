@@ -6,23 +6,32 @@ using Eremite;
 using Eremite.Buildings;
 using Eremite.Characters.Villagers;
 using Eremite.Model.State;
+using Eremite.View.HUD.Woodcutters;
 using UnityEngine;
 
 namespace Stormwalker {
 
     public class Woodcutters : GameMB {
 
+        private KeyboardShortcut assignOne = new(KeyCode.X, KeyCode.LeftControl);
         private KeyboardShortcut unassignAll = new(KeyCode.X, KeyCode.LeftShift);
         private KeyboardShortcut unassignSome = new(KeyCode.X, KeyCode.LeftAlt);
 
+        private WoodcuttersHUD woodcuttersHUD;
+
+        public void PatchPanel(WoodcuttersHUD hud){
+            woodcuttersHUD = hud;
+            var go = hud.transform.localPosition = new(120f, -71f, 0f);
+        }
 
         private void Update(){
             if(!Eremite.Controller.GameController.IsGameActive || InputService.IsLocked()) 
                 return;
 
-            if (unassignAll.IsDown()){
-                int numUnassigned = BuildingsService.Camps.Values.Select(UnassignAll).Sum();
-                Publish(numUnassigned);
+            if (assignOne.IsDown()){
+                woodcuttersHUD.OnRightClick();
+            } else if (unassignAll.IsDown()){
+                woodcuttersHUD.OnClick();
             } else if (unassignSome.IsDown()) {
                 int numUnassigned;
                 if(canLowerHostility(out numUnassigned)){

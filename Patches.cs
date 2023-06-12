@@ -16,6 +16,7 @@ using Eremite.Characters.Villagers;
 using System;
 using UniRx;
 using Eremite.Controller.Generator;
+using Eremite.View.HUD.Woodcutters;
 
 namespace Stormwalker
 {
@@ -26,6 +27,13 @@ namespace Stormwalker
         private static void Load(GameLoader __instance)
         {
             Plugin.SetupState(__instance.state ==  null);
+        }
+
+        [HarmonyPatch(typeof(WoodcuttersHUD), nameof(WoodcuttersHUD.SetUp))]
+        [HarmonyPostfix]
+        private static void SetUpHousePanel(WoodcuttersHUD __instance){
+            var woodcutters = Plugin.Instance.gameObject.GetComponent<Woodcutters>();
+            woodcutters.PatchPanel(__instance);
         }
 
         [HarmonyPatch(typeof(HousePanel), nameof(HousePanel.Awake))]
