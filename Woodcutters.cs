@@ -48,11 +48,17 @@ namespace Stormwalker {
         }
 
         private bool canLowerHostility(out int amount){
+            if((HostilityService as Eremite.Services.HostilityService).IsFirstLevel()){
+                amount = -1;
+                return false;
+            }
+
             int woodcutterHostility = HostilityService.GetPointsFor(HostilitySource.Woodcutter);
             if(woodcutterHostility <= 0){
                 amount = -1;
                 return false;
             }
+            
             int currentPoints = HostilityService.Points.Value + 1;
             int numWoodcutters = HostilityService.GetSourceAmount(HostilitySource.Woodcutter);
             amount = (int)Math.Ceiling((double)currentPoints * numWoodcutters / woodcutterHostility);
