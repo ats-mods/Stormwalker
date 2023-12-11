@@ -145,14 +145,6 @@ namespace Stormwalker
             Plugin.buildingPanel = __instance;
         }
 
-        [HarmonyPatch(typeof(TradingGoodSlot), nameof(TradingGoodSlot.Start))]
-        [HarmonyPostfix]
-        private static void GoodSlotAddMiddleClick(TradingGoodSlot __instance){
-            __instance.multiButton.AddMiddleListener(
-                new UnityAction( ()=> TradePatches.MatchOffer(__instance)  )
-            );
-        }
-
         [HarmonyPatch(typeof(TraderPanel), nameof(TraderPanel.Show))]
         [HarmonyPostfix]
         private static void TraderPanel__Show(TraderPanel __instance){
