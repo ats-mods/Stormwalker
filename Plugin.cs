@@ -80,11 +80,11 @@ namespace Stormwalker
                 var animator = cam.Camera.GetComponentInChildren<PostProcessesAnimator>();
                 if(cam.zoomLimit.x == zoom && cam.zoomLimit.y == zoom){ // Zoom back to normal
                     cam.zoomLimit = zoomLimit;
-                    if(animator != null) animator.AdjustDeapthOfField(MB.ClientPrefsService.DeapthOfField.Value);
+                    //if(animator != null) animator.AdjustDeapthOfField(MB.ClientPrefsService.DeapthOfField.Value);
                 } else { // Zoom out
                     zoomLimit = cam.zoomLimit;
                     cam.zoomLimit = new Vector2(zoom, zoom);
-                    if(animator != null) animator.AdjustDeapthOfField(isOn: false);
+                    //if(animator != null) animator.AdjustDeapthOfField(isOn: false);
                 }
             } else if(superSpeed.IsDown()){
                 GameMB.TimeScaleService.Change(SUPER_SPEED_SCALE, true, false);
